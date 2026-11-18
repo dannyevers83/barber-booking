@@ -6,6 +6,14 @@ import { generateTimeSlots } from '../services/availabilityService.js';
 
 // ─── Booking controller ────────────────────────────────────────────────
 export async function createBooking(req, res) {
+  // ─── Short maintenance window during a database transfer ──────────
+  if (process.env.BOOKING_MAINTENANCE === 'true') {
+    return res.status(503).json({
+      error:
+        'Bookings are temporarily paused for maintenance. Please try again shortly.',
+    });
+  }
+
   // ─── Validate request ─────────────────────────────────────────────────
   const booking = req.body;
   const error = validateBooking(booking);

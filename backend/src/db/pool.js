@@ -5,9 +5,10 @@ import { Pool } from 'pg';
 // ─── Database connection pool ──────────────────────────────────────
 
 const pool = new Pool(
-  process.env.DATABASE_URL
+  process.env.NEON_DATABASE_URL || process.env.DATABASE_URL
     ? {
-        connectionString: process.env.DATABASE_URL,
+        connectionString:
+          process.env.NEON_DATABASE_URL || process.env.DATABASE_URL,
         connectionTimeoutMillis: 10000,
         max: 5,
       }

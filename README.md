@@ -42,7 +42,23 @@ Open the Vite URL shown in the terminal. Vite forwards `/api` requests to the lo
 
 Push this repository to GitHub and create a Render Blueprint using the root `render.yaml`. It defines one free Node web service and one free PostgreSQL 18 database in Frankfurt.
 
-The build installs both applications and builds the frontend. Express serves the built frontend and `/api` endpoints from the same domain. Render supplies `DATABASE_URL`; local passwords and test bookings are not uploaded. Before listening for requests, the server runs migrations and inserts the four starting services. Startup fails if initialization fails.
+The build installs both applications and builds the frontend. Express serves the built frontend and `/api` endpoints from the same domain. The server reads `DATABASE_URL` from Render's environment settings; local passwords and test bookings are not uploaded. Before listening for requests, the server runs migrations and inserts the four starting services. Startup fails if initialization fails.
+
+### Moving the online database to Neon
+
+The migration is not complete until the application has been verified against Neon. The original Render database remains available during the move.
+
+1. Create an empty Neon Free project using PostgreSQL 18, preferably in Frankfurt, and test the migrations on an isolated Neon branch.
+2. Push the updated source and `render.yaml`. The Blueprint changes `DATABASE_URL` to a manually managed secret. Its existing value is preserved.
+3. Set `BOOKING_MAINTENANCE=true` in Render and deploy. **Wait for this deployment to become live before the transfer.** New bookings now receive HTTP 503 while the site remains readable.
+4. Keep `DATABASE_URL` pointing to the original Render database. Set `NEON_DATABASE_URL` to a **direct**, TLS-enabled Neon connection string, then set `TRANSFER_TO_NEON=true` and deploy. The application initializes the destination, copies services and bookings in a transaction, and compares every stored field. It keeps UUIDs, dates, contact details, original prices and timestamp microseconds. The source is read in a read-only transaction and is never modified.
+5. Verify the migration summary and destination data through Neon. The transfer refuses an unrecognized destination containing bookings and rolls back if verification fails. A completion record prevents duplicate transfers on restarts.
+6. Set `DATABASE_URL` to the verified Neon URL, clear `NEON_DATABASE_URL`, and set `TRANSFER_TO_NEON=false` and `BOOKING_MAINTENANCE=false`. Deploy again and verify services, availability, booking and conflict handling. Never commit database URLs or log customer data.
+7. Keep the original Render database as a temporary rollback copy. If a transfer fails before bookings resume, restore `DATABASE_URL` to the original source, clear `NEON_DATABASE_URL`, disable transfer mode and maintenance, then deploy. Once bookings resume on Neon, migrate any new records before considering a rollback.
+
+This server-side transfer can read the original database over Render's private network. It does not need to open the source database's public firewall. An alternative is `pg_dump` / `pg_restore`, using direct connections and a temporary rule allowing only the operator's IP.
+
+The app already supports an external Postgres connection string. Its migrations and seed data are repeatable, so starting it against the restored database preserves existing bookings and service prices. Local development continues to use Docker on port 5433.
 
 Render's free web service can sleep when inactive. Free Render PostgreSQL databases expire after 30 days. Review the current [free instance limits](https://render.com/docs/free) before publishing; this configuration is intended for a temporary demo.
 
@@ -66,4 +82,5 @@ This is a learning demo for one barber. Appointments are test data. Accounts, ca
 ```bash
 npm run lint --prefix frontend
 npm run build --prefix frontend
+npm test --prefix backend
 ```

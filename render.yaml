@@ -15,10 +15,11 @@ services:
       - key: AUTO_MIGRATE
         value: 'true'
       - key: DATABASE_URL
-        fromDatabase:
-          name: oak-and-steel-demo-db
-          property: connectionString
+        # Managed as a secret in Render. This also supports an external Neon database.
+        # Existing values are preserved; enter the Neon URL only after restoring data.
+        sync: false
 
+# Keep the original database until the Neon migration has been verified.
 databases:
   - name: oak-and-steel-demo-db
     plan: free
