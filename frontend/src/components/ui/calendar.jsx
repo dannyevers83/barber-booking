@@ -1,5 +1,7 @@
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import * as React from 'react';
-import { cn } from 'cn';
+import { cn } from '@/lib/utils';
 import { DayPicker, getDefaultClassNames } from 'react-day-picker';
 
 import { Button } from '@/components/ui/button';
@@ -9,6 +11,8 @@ import {
   ChevronRightIcon,
   ChevronDownIcon,
 } from 'lucide-react';
+
+// ─── Calendar component ──────────────────────────────────────────────
 
 function Calendar({
   className,
@@ -178,6 +182,8 @@ function Calendar({
     />
   );
 }
+
+// ─── Day button and keyboard focus ───────────────────────────────────
 
 function CalendarDayButton({ className, day, modifiers, locale, ...props }) {
   const defaultClassNames = getDefaultClassNames();

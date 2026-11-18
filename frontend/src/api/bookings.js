@@ -1,4 +1,5 @@
-// ─── Booking API ────────────────────────────────────────────────────────
+// ─── Booking API ─────────────────────────────────────────────────────
+
 export async function createBooking(booking) {
   const response = await fetch('/api/bookings', {
     method: 'POST',

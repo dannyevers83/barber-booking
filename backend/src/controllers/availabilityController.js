@@ -1,13 +1,15 @@
-// ─── Imports ───────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
 
 import { getServiceById } from '../models/serviceModel.js';
 import { getBookingsForDate } from '../models/bookingModel.js';
 import { getAvailableTimeSlots } from '../services/availabilityService.js';
 import { validateAvailability } from '../validators/availabilityValidator.js';
 
-// ─── Availability controller ───────────────────────────────────────
+// ─── Availability controller ─────────────────────────────────────────
 
 export async function getAvailability(req, res) {
+  // ─── Validate query parameters ─────────────────────────────────────
+
   const { serviceId, date } = req.query;
 
   const error = validateAvailability(serviceId, date);
@@ -17,6 +19,8 @@ export async function getAvailability(req, res) {
   }
 
   try {
+    // ─── Load the selected service ───────────────────────────────────
+
     const service = await getServiceById(serviceId.trim());
 
     if (!service) {
@@ -24,6 +28,8 @@ export async function getAvailability(req, res) {
         error: 'Please select an available service.',
       });
     }
+
+    // ─── Read existing bookings and calculate availability ───────────
 
     const bookings = await getBookingsForDate(date.trim());
 

@@ -1,11 +1,12 @@
-// ─── Imports ────────────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
 
 import { getTodayDate } from '../utils/timeUtils.js';
 
-// ─── Appointment date validation ───────────────────────────────────
+// ─── Appointment date validation ─────────────────────────────────────
 
 export function validateAppointmentDate(dateValue) {
-  // ─── Date input and format ───────────────────────────────────────────
+  // ─── Date input and format ─────────────────────────────────────────
+
   if (typeof dateValue !== 'string' || !dateValue.trim()) {
     return 'Please select an appointment date.';
   }
@@ -16,7 +17,8 @@ export function validateAppointmentDate(dateValue) {
     return 'Please enter a date in YYYY-MM-DD format';
   }
 
-  // ─── Calendar date ───────────────────────────────────────────────────
+  // ─── Calendar date ─────────────────────────────────────────────────
+
   const date = dateValue.trim();
   const parsedDate = new Date(`${date}T00:00:00Z`);
 
@@ -27,7 +29,8 @@ export function validateAppointmentDate(dateValue) {
     return 'Please enter a valid calendar date';
   }
 
-  // ─── Earliest date in the shop time zone ─────────────────────────────
+  // ─── Earliest date in the shop time zone ───────────────────────────
+
   const today = getTodayDate();
 
   if (date < today) {

@@ -1,6 +1,10 @@
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import { Button as ButtonPrimitive } from '@base-ui/react/button';
 import { buttonVariants } from './button-variants';
-import { cn } from 'cn';
+import { cn } from '@/lib/utils';
+
+// ─── Button component ────────────────────────────────────────────────
 
 function Button({
   className,

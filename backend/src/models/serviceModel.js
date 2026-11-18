@@ -1,8 +1,8 @@
-// ─── Imports ───────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
 
 import pool from '../db/pool.js';
 
-// ─── Read services ─────────────────────────────────────────────────
+// ─── Read services ───────────────────────────────────────────────────
 
 export async function getAllServices() {
   const result = await pool.query(`
@@ -14,7 +14,7 @@ export async function getAllServices() {
   return result.rows;
 }
 
-// ─── Read one service ──────────────────────────────────────────────
+// ─── Read one service ────────────────────────────────────────────────
 
 export async function getServiceById(serviceId) {
   const result = await pool.query(

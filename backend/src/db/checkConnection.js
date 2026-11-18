@@ -1,8 +1,8 @@
-// ─── Imports ───────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
 
 import pool from './pool.js';
 
-// ─── Database connection check ─────────────────────────────────────
+// ─── Database connection check ───────────────────────────────────────
 
 try {
   const result = await pool.query('SELECT 1 AS connected');

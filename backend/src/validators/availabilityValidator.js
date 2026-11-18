@@ -1,7 +1,8 @@
-// ─── Imports ────────────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import { validateAppointmentDate } from './dateValidator.js';
 
-// ─── Availability validation ───────────────────────────────────────
+// ─── Availability validation ─────────────────────────────────────────
 
 export function validateAvailability(serviceId, date) {
   if (typeof serviceId !== 'string' || !serviceId.trim()) {

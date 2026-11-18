@@ -1,4 +1,4 @@
-// ─── Imports ───────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
 
 import { bookingConfig } from '../config/bookingConfig.js';
 import {
@@ -9,7 +9,7 @@ import {
   isClosedDay,
 } from '../utils/timeUtils.js';
 
-// ─── Generate candidate times ──────────────────────────────────────
+// ─── Generate candidate times ────────────────────────────────────────
 
 export function generateTimeSlots(durationMinutes) {
   const opening = timeToMinutes(bookingConfig.openingTime);
@@ -27,7 +27,7 @@ export function generateTimeSlots(durationMinutes) {
   return slots;
 }
 
-// ─── Check booking overlap ─────────────────────────────────────────
+// ─── Check booking overlap ───────────────────────────────────────────
 
 export function hasOverlap(start, end, bookings) {
   return bookings.some((booking) => {
@@ -38,7 +38,7 @@ export function hasOverlap(start, end, bookings) {
   });
 }
 
-// ─── Find available times ──────────────────────────────────────────
+// ─── Find available times ────────────────────────────────────────────
 
 export function getAvailableTimeSlots(durationMinutes, bookings, date) {
   if (isClosedDay(date)) {

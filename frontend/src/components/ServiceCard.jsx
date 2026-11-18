@@ -1,6 +1,8 @@
-// ─── Service card component ─────────────────────────────────────────────
+// ─── Service card component ──────────────────────────────────────────
+
 function ServiceCard({ service, isSelected, onSelect }) {
-  // ─── Selectable service card ──────────────────────────────────────────
+  // ─── Selectable service card ───────────────────────────────────────
+
   return (
     <button
       type="button"

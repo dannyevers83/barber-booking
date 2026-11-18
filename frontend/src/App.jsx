@@ -1,5 +1,6 @@
-// ─── Imports ────────────────────────────────────────────────────────────
-import { useEffect, useRef, useState } from 'react';
+// ─── Imports ─────────────────────────────────────────────────────────
+
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 
 import BookingForm from './components/BookingForm';
 import DateTimeSelection from './components/DateTimeSelection';
@@ -9,13 +10,22 @@ import { getServices } from './api/services';
 
 import barbershopImage from './assets/barbershop.png';
 
-// ─── App component ─────────────────────────────────────────────────────
+// ─── Optional account feature ────────────────────────────────────────
+
+const AccountSection = lazy(() => import('./components/AccountSection'));
+const isAuthConfigured = Boolean(import.meta.env.VITE_NEON_AUTH_URL);
+
+// ─── App component ───────────────────────────────────────────────────
+
 function App() {
-  // ─── Service loading state ────────────────────────────────────────────
+  // ─── Service loading state ─────────────────────────────────────────
+
   const [services, setServices] = useState([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
   const [servicesError, setServicesError] = useState('');
-  // ─── Booking selection state ──────────────────────────────────────────
+
+  // ─── Booking selection state ───────────────────────────────────────
+
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
@@ -23,18 +33,23 @@ function App() {
   const [availabilityVersion, setAvailabilityVersion] = useState(0);
   const [bookingMessage, setBookingMessage] = useState('');
 
-  // ─── Section references ──────────────────────────────────────────────
+  // ─── Calendar state ────────────────────────────────────────────────
+
+  const [today] = useState(() => new Date());
+
+  // ─── Section references ────────────────────────────────────────────
+
   const appointmentSectionRef = useRef(null);
   const timeSlotRef = useRef(null);
   const summaryRef = useRef(null);
 
-  // ─── Selected service details ────────────────────────────────────────
+  // ─── Selected service details ──────────────────────────────────────
+
   const selectedService = services.find(
     (service) => service.id === selectedServiceId,
   );
 
-  // ─── Minimum booking date ────────────────────────────────────────────
-  const [today] = useState(() => new Date());
+  // ─── Minimum booking date ──────────────────────────────────────────
 
   const minimumDate = [
     today.getFullYear(),
@@ -42,7 +57,8 @@ function App() {
     String(today.getDate()).padStart(2, '0'),
   ].join('-');
 
-  // ─── Display date ────────────────────────────────────────────────────
+  // ─── Display date ──────────────────────────────────────────────────
+
   const formattedDate = selectedDate
     ? new Intl.DateTimeFormat('en-GB', {
         day: 'numeric',
@@ -51,7 +67,7 @@ function App() {
       }).format(new Date(`${selectedDate}T00:00:00`))
     : '';
 
-  // ─── Event handlers ──────────────────────────────────────────────────
+  // ─── Event handlers ────────────────────────────────────────────────
 
   function selectService(serviceId) {
     setBookingMessage('');
@@ -73,18 +89,19 @@ function App() {
     setSelectedDate(date);
   }
 
+  function selectTime(time) {
+    setBookingMessage('');
+    setSelectedTime(time);
+  }
+
   function handleBookingSuccess(message) {
     setBookingMessage(message);
     setSelectedTime('');
     setAvailabilityVersion((version) => version + 1);
   }
 
-  function selectTime(time) {
-    setBookingMessage('');
-    setSelectedTime(time);
-  }
+  // ─── Service loading effect ────────────────────────────────────────
 
-  // ─── Service loading effect ──────────────────────────────────────────
   useEffect(() => {
     let active = true;
 
@@ -113,7 +130,8 @@ function App() {
     };
   }, []);
 
-  // ─── Booking step scrolling ──────────────────────────────────────────
+  // ─── Booking step scrolling ────────────────────────────────────────
+
   useEffect(() => {
     if (selectedServiceId) {
       appointmentSectionRef.current?.scrollIntoView({
@@ -138,10 +156,11 @@ function App() {
     }
   }, [selectedServiceId, selectedDate, selectedTime]);
 
-  // ─── Page layout ─────────────────────────────────────────────────────
+  // ─── Page layout ───────────────────────────────────────────────────
+
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
-      {/* ─── Introduction ───────────────────────────────────────────── */}
+      {/* ─── Introduction ───────────────────────────────────────── */}
 
       <h1 className="text-3xl font-bold">Oak & Steel Barbers</h1>
       <p className="mt-4 mb-6 text-muted-foreground">
@@ -153,6 +172,20 @@ function App() {
         contact details.
       </p>
 
+      {/* ─── Account status ─────────────────────────────────────── */}
+
+      {isAuthConfigured && (
+        <Suspense
+          fallback={
+            <p role="status" className="mt-6">
+              Loading account...
+            </p>
+          }
+        >
+          <AccountSection />
+        </Suspense>
+      )}
+
       <img
         src={barbershopImage}
         alt="Leather barber chair in warmly lit barbershop"
@@ -161,7 +194,7 @@ function App() {
         className="mt-8 aspect-video w-full rounded-xl object-cover"
       />
 
-      {/* ─── Service selection ──────────────────────────────────────── */}
+      {/* ─── Service selection ──────────────────────────────────── */}
 
       {isLoadingServices && (
         <p role="status" className="mt-8 text-muted-foreground">
@@ -187,7 +220,7 @@ function App() {
         ))}
       </ul>
 
-      {/* ─── Date and time selection ────────────────────────────────── */}
+      {/* ─── Date and time selection ────────────────────────────── */}
 
       {selectedServiceId && (
         <DateTimeSelection
@@ -204,7 +237,7 @@ function App() {
         />
       )}
 
-      {/* ─── Booking confirmation ────────────────────────────────────── */}
+      {/* ─── Booking confirmation ───────────────────────────────── */}
 
       {bookingMessage && (
         <p role="status" className="mt-6 text-primary">
@@ -212,7 +245,7 @@ function App() {
         </p>
       )}
 
-      {/* ─── Appointment summary ────────────────────────────────────── */}
+      {/* ─── Appointment summary ────────────────────────────────── */}
 
       {selectedService && selectedDate && selectedTime && (
         <section ref={summaryRef} className="mt-12 rounded-xl bg-card p-6">
@@ -225,7 +258,7 @@ function App() {
             {selectedService.duration} minutes — €{selectedService.price}
           </p>
 
-          {/* ─── Customer details ───────────────────────────────────── */}
+          {/* ─── Customer details ───────────────────────────────── */}
 
           <BookingForm
             serviceId={selectedServiceId}

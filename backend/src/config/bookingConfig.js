@@ -1,4 +1,4 @@
-// ─── Booking settings ──────────────────────────────────────────────
+// ─── Booking settings ────────────────────────────────────────────────
 
 export const bookingConfig = {
   timeZone: 'Europe/Amsterdam',

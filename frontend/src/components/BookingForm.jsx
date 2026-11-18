@@ -1,19 +1,25 @@
-// ─── Imports ────────────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import { useState } from 'react';
 
 import { createBooking } from '@/api/bookings';
 
-// ─── Booking form component ────────────────────────────────────────────
+// ─── Booking form component ──────────────────────────────────────────
+
 function BookingForm({ serviceId, date, time, onBookingSuccess }) {
-  // ─── Customer details state ───────────────────────────────────────────
+  // ─── Customer details state ────────────────────────────────────────
+
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
-  // ─── Submission state ─────────────────────────────────────────────────
+
+  // ─── Submission state ──────────────────────────────────────────────
+
   const [bookingError, setBookingError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ─── Booking submission ──────────────────────────────────────────────
+  // ─── Booking submission ────────────────────────────────────────────
+
   async function handleBookingSubmit(event) {
     event.preventDefault();
 
@@ -51,10 +57,11 @@ function BookingForm({ serviceId, date, time, onBookingSuccess }) {
     }
   }
 
-  // ─── Form layout ─────────────────────────────────────────────────────
+  // ─── Form layout ───────────────────────────────────────────────────
+
   return (
     <form onSubmit={handleBookingSubmit}>
-      {/* ─── Full name ──────────────────────────────────────────────── */}
+      {/* ─── Full name ──────────────────────────────────────────── */}
 
       <label htmlFor="customer-name" className="mt-6 block font-semibold">
         Full name
@@ -71,7 +78,7 @@ function BookingForm({ serviceId, date, time, onBookingSuccess }) {
         className="mt-2 w-full rounded-lg border border-input bg-background p-3"
       />
 
-      {/* ─── Email address ──────────────────────────────────────────── */}
+      {/* ─── Email address ──────────────────────────────────────── */}
 
       <label htmlFor="customer-email" className="mt-4 block font-semibold">
         Email address
@@ -88,7 +95,7 @@ function BookingForm({ serviceId, date, time, onBookingSuccess }) {
         className="mt-2 w-full rounded-lg border border-input bg-background p-3"
       />
 
-      {/* ─── Phone number ───────────────────────────────────────────── */}
+      {/* ─── Phone number ───────────────────────────────────────── */}
 
       <label htmlFor="customer-phone" className="mt-4 block font-semibold">
         Phone number
@@ -105,7 +112,7 @@ function BookingForm({ serviceId, date, time, onBookingSuccess }) {
         className="mt-2 w-full rounded-lg border border-input bg-background p-3"
       />
 
-      {/* ─── Validation message ─────────────────────────────────────── */}
+      {/* ─── Validation message ─────────────────────────────────── */}
 
       {bookingError && (
         <p role="alert" className="mt-4 text-destructive">
@@ -113,7 +120,7 @@ function BookingForm({ serviceId, date, time, onBookingSuccess }) {
         </p>
       )}
 
-      {/* ─── Submit booking ─────────────────────────────────────────────── */}
+      {/* ─── Submit booking ─────────────────────────────────────── */}
 
       <button
         type="submit"

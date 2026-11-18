@@ -1,4 +1,5 @@
-// ─── Imports ────────────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import { validateBooking } from '../validators/bookingValidator.js';
 import { getServiceById } from '../models/serviceModel.js';
 import { insertBooking } from '../models/bookingModel.js';
@@ -10,9 +11,11 @@ import {
   isClosedDay,
 } from '../utils/timeUtils.js';
 
-// ─── Booking controller ────────────────────────────────────────────────
+// ─── Booking controller ──────────────────────────────────────────────
+
 export async function createBooking(req, res) {
-  // ─── Short maintenance window during a database transfer ──────────
+  // ─── Short maintenance window during a database transfer ───────────
+
   if (process.env.BOOKING_MAINTENANCE === 'true') {
     return res.status(503).json({
       error:
@@ -20,7 +23,8 @@ export async function createBooking(req, res) {
     });
   }
 
-  // ─── Validate request ─────────────────────────────────────────────────
+  // ─── Validate request ──────────────────────────────────────────────
+
   const booking = req.body;
   const error = validateBooking(booking);
 
@@ -28,7 +32,8 @@ export async function createBooking(req, res) {
     return res.status(400).json({ error });
   }
 
-  // ─── Clean validated data ────────────────────────────────────────────
+  // ─── Clean validated data ──────────────────────────────────────────
+
   const cleanedBooking = {
     serviceId: booking.serviceId.trim(),
     date: booking.date.trim(),
@@ -39,6 +44,7 @@ export async function createBooking(req, res) {
   };
 
   // ─── Check service in database ─────────────────────────────────────
+
   try {
     const service = await getServiceById(cleanedBooking.serviceId);
 
@@ -48,7 +54,7 @@ export async function createBooking(req, res) {
       });
     }
 
-    // ─── Reject bookings on closed days ────────────────────────────────
+    // ─── Reject bookings on closed days ──────────────────────────────
 
     if (isClosedDay(cleanedBooking.date)) {
       return res.status(400).json({
@@ -56,7 +62,8 @@ export async function createBooking(req, res) {
       });
     }
 
-    // ─── Check appointment time ────────────────────────────────────────
+    // ─── Check appointment time ──────────────────────────────────────
+
     const validTimes = generateTimeSlots(service.duration_minutes);
 
     if (!validTimes.includes(cleanedBooking.time)) {
@@ -65,7 +72,7 @@ export async function createBooking(req, res) {
       });
     }
 
-    // ─── Reject elapsed times today ────────────────────────────────────
+    // ─── Reject elapsed times today ──────────────────────────────────
 
     if (
       cleanedBooking.date === getTodayDate() &&
@@ -76,7 +83,7 @@ export async function createBooking(req, res) {
       });
     }
 
-    // ─── Save booking ──────────────────────────────────────────────────
+    // ─── Save booking ────────────────────────────────────────────────
 
     const savedBooking = await insertBooking(cleanedBooking, service);
 

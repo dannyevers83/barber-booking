@@ -1,11 +1,11 @@
-// ─── Imports ───────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { getAvailableTimeSlots } from '../src/services/availabilityService.js';
 
-// ─── Closed days ───────────────────────────────────────────────────
+// ─── Closed days ─────────────────────────────────────────────────────
 
 test('returns no available times on Sunday', () => {
   const slots = getAvailableTimeSlots(30, [], '2030-06-16');
@@ -13,7 +13,7 @@ test('returns no available times on Sunday', () => {
   assert.deepEqual(slots, []);
 });
 
-// ─── Open days ─────────────────────────────────────────────────────
+// ─── Open days ───────────────────────────────────────────────────────
 
 test('offers opening time on an open Monday', () => {
   const slots = getAvailableTimeSlots(30, [], '2030-06-17');
@@ -21,7 +21,7 @@ test('offers opening time on an open Monday', () => {
   assert.ok(slots.includes('09:00'));
 });
 
-// ─── Booking overlap ───────────────────────────────────────────────
+// ─── Booking overlap ─────────────────────────────────────────────────
 
 test('excludes times that overlap an existing booking', () => {
   const bookings = [
@@ -36,7 +36,7 @@ test('excludes times that overlap an existing booking', () => {
   assert.equal(slots.includes('10:15'), false);
 });
 
-// ─── Adjacent appointments ─────────────────────────────────────────
+// ─── Adjacent appointments ───────────────────────────────────────────
 
 test('allows an appointment immediately after an existing booking', () => {
   const bookings = [
@@ -51,7 +51,7 @@ test('allows an appointment immediately after an existing booking', () => {
   assert.equal(slots.includes('10:30'), true);
 });
 
-// ─── Elapsed times ─────────────────────────────────────────────────
+// ─── Elapsed times ───────────────────────────────────────────────────
 
 test('excludes elapsed times today', (t) => {
   t.mock.timers.enable({
@@ -66,7 +66,7 @@ test('excludes elapsed times today', (t) => {
   assert.equal(slots.includes('10:45'), true);
 });
 
-// ─── Future dates ──────────────────────────────────────────────────
+// ─── Future dates ────────────────────────────────────────────────────
 
 test('keeps morning times available on a future open day', (t) => {
   t.mock.timers.enable({
@@ -80,7 +80,7 @@ test('keeps morning times available on a future open day', (t) => {
   assert.equal(slots.includes('10:15'), true);
 });
 
-// ─── Closing time ──────────────────────────────────────────────────
+// ─── Closing time ────────────────────────────────────────────────────
 
 test('only offers times that fit before closing', () => {
   const slots = getAvailableTimeSlots(45, [], '2030-06-17');

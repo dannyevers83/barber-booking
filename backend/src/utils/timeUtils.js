@@ -1,8 +1,8 @@
-// ─── Imports ────────────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
 
 import { bookingConfig } from '../config/bookingConfig.js';
 
-// ─── Convert time to minutes ───────────────────────────────────────
+// ─── Convert time to minutes ─────────────────────────────────────────
 
 export function timeToMinutes(time) {
   const [hours, minutes] = time.split(':').map(Number);
@@ -10,7 +10,7 @@ export function timeToMinutes(time) {
   return hours * 60 + minutes;
 }
 
-// ─── Convert minutes to time ───────────────────────────────────────
+// ─── Convert minutes to time ─────────────────────────────────────────
 
 export function minutesToTime(totalMinutes) {
   const hours = Math.floor(totalMinutes / 60);
@@ -19,7 +19,7 @@ export function minutesToTime(totalMinutes) {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
 
-// ─── Current time in the shop time zone ─────────────────────────────
+// ─── Current time in the shop time zone ──────────────────────────────
 
 export function getCurrentTimeInMinutes() {
   const currentTime = new Intl.DateTimeFormat('en-GB', {
@@ -32,7 +32,7 @@ export function getCurrentTimeInMinutes() {
   return timeToMinutes(currentTime);
 }
 
-// ─── Today's date in the shop time zone ─────────────────────────────
+// ─── Today's date in the shop time zone ──────────────────────────────
 
 export function getTodayDate() {
   const parts = new Intl.DateTimeFormat('en-GB', {
@@ -47,7 +47,7 @@ export function getTodayDate() {
     .join('-');
 }
 
-// ─── Check whether the shop is closed ──────────────────────────────
+// ─── Check whether the shop is closed ────────────────────────────────
 
 export function isClosedDay(date) {
   const weekday = new Date(`${date}T00:00:00Z`).getUTCDay();

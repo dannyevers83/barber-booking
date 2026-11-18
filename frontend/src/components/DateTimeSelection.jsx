@@ -1,10 +1,12 @@
-// ─── Imports ────────────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar.jsx';
 import { getAvailability } from '../api/availability';
 
-// ─── Date and time selection component ─────────────────────────────────
+// ─── Date and time selection component ───────────────────────────────
+
 function DateTimeSelection({
   serviceId,
   selectedDate,
@@ -22,6 +24,16 @@ function DateTimeSelection({
   const [availableSlots, setAvailableSlots] = useState([]);
   const [isLoadingAvailability, setIsLoadingAvailability] = useState(false);
   const [availabilityError, setAvailabilityError] = useState('');
+
+  // ─── Calendar values ───────────────────────────────────────────────
+
+  const calendarDate = selectedDate
+    ? new Date(`${selectedDate}T00:00:00`)
+    : undefined;
+  const disabledDates = [
+    { before: new Date(`${minimumDate}T00:00:00`) },
+    { dayOfWeek: [0] },
+  ];
 
   // ─── Calendar date selection ───────────────────────────────────────
 
@@ -69,29 +81,27 @@ function DateTimeSelection({
     };
   }, [serviceId, selectedDate, availabilityVersion]);
 
-  // ─── Selection layout ─────────────────────────────────────────────────
+  // ─── Selection layout ──────────────────────────────────────────────
+
   return (
     <section ref={appointmentSectionRef} className="mt-12">
-      {/* ─── Introduction ───────────────────────────────────────────── */}
+      {/* ─── Introduction ───────────────────────────────────────── */}
+
       <h2 className="text-2xl font-bold">Choose a date and time</h2>
       <p className="mt-2 text-muted-foreground">
         Select an available appointment
       </p>
       <div className="mt-6 grid items-start gap-6 md:grid-cols-[auto_minmax(0,1fr)]">
-        {/* ─── Date selection ─────────────────────────────────────────── */}
+        {/* ─── Date selection ───────────────────────────────────── */}
+
         <fieldset className="mt-6">
           <legend className="font-semibold">Appointment date</legend>
 
           <Calendar
             mode="single"
-            selected={
-              selectedDate ? new Date(`${selectedDate}T00:00:00`) : undefined
-            }
+            selected={calendarDate}
             onSelect={handleDateSelect}
-            disabled={[
-              { before: new Date(`${minimumDate}T00:00:00`) },
-              { dayOfWeek: [0] },
-            ]}
+            disabled={disabledDates}
             aria-label="Appointment date"
             aria-describedby={dateError ? 'date-error' : undefined}
             className="mt-2 rounded-lg border border-input bg-card [--cell-size:2.25rem] sm:[--cell-size:2.75rem]"
@@ -102,7 +112,9 @@ function DateTimeSelection({
             </p>
           )}
         </fieldset>
-        {/* ─── Time selection ─────────────────────────────────────────── */}
+
+        {/* ─── Time selection ───────────────────────────────────── */}
+
         {selectedDate ? (
           <fieldset ref={timeSlotRef} className="mt-6">
             <legend className="font-semibold">Appointment time</legend>

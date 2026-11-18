@@ -1,9 +1,12 @@
-// ─── Imports ────────────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import { getAllServices } from '../models/serviceModel.js';
 
-// ─── Service controller ────────────────────────────────────────────────
+// ─── Service controller ──────────────────────────────────────────────
+
 export async function getServices(req, res) {
   try {
+    // Read stored values before converting them for the public API.
     const rows = await getAllServices();
 
     const services = rows.map((row) => ({

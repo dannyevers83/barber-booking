@@ -1,15 +1,15 @@
-/* ─── Imports ──────────────────────────────────────────────────────── */
+/* ─── Imports ────────────────────────────────────────────────────── */
 
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/geist';
 
-/* ─── Dark mode selector ───────────────────────────────────────────── */
+/* ─── Dark mode selector ─────────────────────────────────────────── */
 
 @custom-variant dark (&:is(.dark *));
 
-/* ─── Tailwind theme mapping ───────────────────────────────────────── */
+/* ─── Tailwind theme mapping ─────────────────────────────────────── */
 
 @theme inline {
   /* Typography */
@@ -67,7 +67,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* ─── Light theme defaults ─────────────────────────────────────────── */
+/* ─── Light theme defaults ───────────────────────────────────────── */
 
 :root {
   /* Page and surfaces */
@@ -115,7 +115,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-/* ─── Dark theme — Oak & Steel Barbers ─────────────────────────────── */
+/* ─── Dark theme — Oak & Steel Barbers ───────────────────────────── */
 
 .dark {
   /* Page and surfaces */
@@ -160,7 +160,7 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* ─── Base styles ──────────────────────────────────────────────────── */
+/* ─── Base styles ────────────────────────────────────────────────── */
 
 @layer base {
   * {

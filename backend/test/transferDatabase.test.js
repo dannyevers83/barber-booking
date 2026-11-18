@@ -1,6 +1,10 @@
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { transferDatabase } from '../src/db/transferDatabase.js';
+
+// ─── Example database rows ───────────────────────────────────────────
 
 const service = {
   id: 'haircut',
@@ -20,6 +24,8 @@ const booking = {
   customer_phone: '0612345678',
   created_at: '2026-11-18T02:00:00.123456Z',
 };
+
+// ─── In-memory database clients ──────────────────────────────────────
 
 function fixtures({
   completed = false,
@@ -75,6 +81,8 @@ function fixtures({
   };
 }
 
+// ─── Successful transfer ─────────────────────────────────────────────
+
 test('copies all booking fields, preserving UUID and timestamp microseconds', async () => {
   const f = fixtures();
   const result = await transferDatabase(
@@ -100,6 +108,8 @@ test('copies all booking fields, preserving UUID and timestamp microseconds', as
   assert.ok(!f.calls.some(([, sql]) => sql === 'ROLLBACK'));
 });
 
+// ─── Repeated transfer ───────────────────────────────────────────────
+
 test('restarting after a completed transfer does not copy data again', async () => {
   const f = fixtures({ completed: true });
   const result = await transferDatabase(
@@ -111,6 +121,8 @@ test('restarting after a completed transfer does not copy data again', async () 
   assert.ok(!f.calls.some(([, sql]) => sql.includes('INSERT INTO bookings')));
   assert.equal(f.released(), 2);
 });
+
+// ─── Destination protection ──────────────────────────────────────────
 
 test('refuses to overwrite a destination that already contains bookings', async () => {
   const f = fixtures({ existing: 1 });
@@ -124,6 +136,8 @@ test('refuses to overwrite a destination that already contains bookings', async 
   );
   assert.equal(f.released(), 2);
 });
+
+// ─── Data verification ───────────────────────────────────────────────
 
 test('rolls back when copied data differs from the source', async () => {
   const f = fixtures({ corrupt: true });
@@ -139,6 +153,8 @@ test('rolls back when copied data differs from the source', async () => {
   );
   assert.equal(f.released(), 2);
 });
+
+// ─── Failed writes and cleanup ───────────────────────────────────────
 
 test('releases both connections and rolls back after a database write fails', async () => {
   const f = fixtures({ failInsert: true });

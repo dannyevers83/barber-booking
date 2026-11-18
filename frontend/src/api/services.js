@@ -1,4 +1,5 @@
-// ─── Service API ────────────────────────────────────────────────────────
+// ─── Service API ─────────────────────────────────────────────────────
+
 export async function getServices() {
   const response = await fetch('/api/services');
 

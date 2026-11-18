@@ -1,4 +1,4 @@
-// ─── Availability API ──────────────────────────────────────────────
+// ─── Availability API ────────────────────────────────────────────────
 
 export async function getAvailability(serviceId, date) {
   const query = new URLSearchParams({ serviceId, date });

@@ -1,15 +1,19 @@
-// ─── Imports ────────────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import { isValidPhoneNumber } from 'libphonenumber-js/max';
 import { validateAppointmentDate } from './dateValidator.js';
 
-// ─── Booking validation ────────────────────────────────────────────────
+// ─── Booking validation ──────────────────────────────────────────────
+
 export function validateBooking(booking) {
-  // ─── Request body ─────────────────────────────────────────────────────
+  // ─── Request body ──────────────────────────────────────────────────
+
   if (!booking || typeof booking !== 'object' || Array.isArray(booking)) {
     return 'Please send a booking object.';
   }
 
-  // ─── Service selection ───────────────────────────────────────────────
+  // ─── Service selection ─────────────────────────────────────────────
+
   if (typeof booking.serviceId !== 'string' || !booking.serviceId.trim()) {
     return 'Please select a service';
   }
@@ -22,7 +26,8 @@ export function validateBooking(booking) {
     return dateError;
   }
 
-  // ─── Time input and format ───────────────────────────────────────────
+  // ─── Time input and format ─────────────────────────────────────────
+
   if (typeof booking.time !== 'string' || !booking.time.trim()) {
     return 'Please select an appointment time';
   }
@@ -33,7 +38,8 @@ export function validateBooking(booking) {
     return 'Please enter a valid time in HH:mm format.';
   }
 
-  // ─── Customer name ───────────────────────────────────────────────────
+  // ─── Customer name ─────────────────────────────────────────────────
+
   if (
     typeof booking.customerName !== 'string' ||
     !booking.customerName.trim()
@@ -41,7 +47,8 @@ export function validateBooking(booking) {
     return 'Please enter your name.';
   }
 
-  // ─── Customer email ──────────────────────────────────────────────────
+  // ─── Customer email ────────────────────────────────────────────────
+
   if (
     typeof booking.customerEmail !== 'string' ||
     !booking.customerEmail.trim()
@@ -55,7 +62,8 @@ export function validateBooking(booking) {
     return 'Please enter a valid email address';
   }
 
-  // ─── Customer phone number ───────────────────────────────────────────
+  // ─── Customer phone number ─────────────────────────────────────────
+
   if (
     typeof booking.customerPhone !== 'string' ||
     !booking.customerPhone.trim()
@@ -67,6 +75,7 @@ export function validateBooking(booking) {
     return 'Please enter a valid phone number.';
   }
 
-  // ─── Validation complete ─────────────────────────────────────────────
+  // ─── Validation complete ───────────────────────────────────────────
+
   return null;
 }

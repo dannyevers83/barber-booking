@@ -1,12 +1,17 @@
-// ─── Imports ────────────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
+
+import { Pool } from 'pg';
+
 import app from './app.js';
 import { initializeDatabase } from './db/initializeDatabase.js';
 import pool from './db/pool.js';
-import { Pool } from 'pg';
 import { transferDatabase } from './db/transferDatabase.js';
 
-// ─── Server startup ────────────────────────────────────────────────────
+// ─── Listening configuration ─────────────────────────────────────────
+
 const port = Number(process.env.PORT) || 3000;
+
+// ─── Optional database initialization ────────────────────────────────
 
 if (
   process.env.AUTO_MIGRATE === 'true' ||
@@ -15,6 +20,8 @@ if (
   try {
     await initializeDatabase();
     console.log('Database migrations completed.');
+
+    // ─── Optional database transfer ──────────────────────────────────
 
     if (process.env.TRANSFER_TO_NEON === 'true') {
       if (process.env.BOOKING_MAINTENANCE !== 'true') {
@@ -58,11 +65,13 @@ if (
   }
 }
 
+// ─── Start accepting requests ────────────────────────────────────────
+
 const server = app.listen(port, '0.0.0.0', () => {
   console.log(`Server running at http://localhost:${port}`);
 });
 
-// ─── Graceful shutdown ─────────────────────────────────────────────
+// ─── Graceful shutdown ───────────────────────────────────────────────
 
 function shutdown() {
   server.close(async () => {
@@ -71,6 +80,8 @@ function shutdown() {
   });
   setTimeout(() => process.exit(1), 10000).unref();
 }
+
+// ─── Process signal handlers ─────────────────────────────────────────
 
 process.once('SIGTERM', shutdown);
 process.once('SIGINT', shutdown);

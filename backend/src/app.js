@@ -1,26 +1,31 @@
-// ─── Imports ────────────────────────────────────────────────────────────
-import express from 'express';
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import { fileURLToPath } from 'node:url';
+
+import express from 'express';
 
 import healthRoutes from './routes/healthRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
 import availabilityRoutes from './routes/availabilityRoutes.js';
 
-// ─── App setup ─────────────────────────────────────────────────────────
+// ─── App setup ───────────────────────────────────────────────────────
+
 const app = express();
 
-// ─── JSON middleware ───────────────────────────────────────────────────
+// ─── JSON middleware ─────────────────────────────────────────────────
+
 app.disable('x-powered-by');
 app.use(express.json({ limit: '16kb' }));
 
-// ─── Routes ────────────────────────────────────────────────────────────
+// ─── Routes ──────────────────────────────────────────────────────────
+
 app.use('/health', healthRoutes);
 app.use('/services', serviceRoutes);
 app.use('/bookings', bookingRoutes);
 app.use('/availability', availabilityRoutes);
 
-// ─── Same-origin API for the deployed frontend ──────────────────────
+// ─── Same-origin API for the deployed frontend ───────────────────────
 
 const api = express.Router();
 api.use('/health', healthRoutes);
@@ -32,7 +37,7 @@ api.use((req, res) =>
 );
 app.use('/api', api);
 
-// ─── Production frontend ───────────────────────────────────────────
+// ─── Production frontend ─────────────────────────────────────────────
 
 if (process.env.NODE_ENV === 'production') {
   const frontendPath = fileURLToPath(
@@ -42,7 +47,7 @@ if (process.env.NODE_ENV === 'production') {
   app.get('/{*path}', (req, res) => res.sendFile(`${frontendPath}index.html`));
 }
 
-// ─── JSON error responses ──────────────────────────────────────────
+// ─── JSON error responses ────────────────────────────────────────────
 
 app.use((error, req, res, next) => {
   if (res.headersSent) return next(error);

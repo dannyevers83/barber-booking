@@ -1,13 +1,13 @@
-// ─── Imports ───────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
 
 import { Router } from 'express';
 import { getAvailability } from '../controllers/availabilityController.js';
 
-// ─── Router setup ──────────────────────────────────────────────────
+// ─── Router setup ────────────────────────────────────────────────────
 
 const router = Router();
 
-// ─── Availability routes ───────────────────────────────────────────
+// ─── Availability routes ─────────────────────────────────────────────
 
 router.get('/', getAvailability);
 

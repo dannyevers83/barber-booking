@@ -1,11 +1,14 @@
-// ─── Imports ────────────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import { Router } from 'express';
 import { getServices } from '../controllers/serviceController.js';
 
-// ─── Router setup ──────────────────────────────────────────────────────
+// ─── Router setup ────────────────────────────────────────────────────
+
 const router = Router();
 
-// ─── Service routes ────────────────────────────────────────────────────
+// ─── Service routes ──────────────────────────────────────────────────
+
 router.get('/', getServices);
 
 export default router;

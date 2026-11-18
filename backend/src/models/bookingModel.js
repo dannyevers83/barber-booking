@@ -1,8 +1,22 @@
-// ─── Imports ───────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
 
 import pool from '../db/pool.js';
 
-// ─── Create booking ────────────────────────────────────────────────
+// ─── Read bookings for a date ────────────────────────────────────────
+
+export async function getBookingsForDate(date) {
+  const result = await pool.query(
+    `SELECT appointment_time, duration_minutes
+    FROM bookings
+    WHERE appointment_date = $1
+    ORDER BY appointment_time`,
+    [date],
+  );
+
+  return result.rows;
+}
+
+// ─── Create booking ──────────────────────────────────────────────────
 
 export async function insertBooking(booking, service) {
   const result = await pool.query(
@@ -31,18 +45,4 @@ export async function insertBooking(booking, service) {
   );
 
   return result.rows[0];
-}
-
-// ─── Read bookings for a date ──────────────────────────────────────
-
-export async function getBookingsForDate(date) {
-  const result = await pool.query(
-    `SELECT appointment_time, duration_minutes
-    FROM bookings
-    WHERE appointment_date = $1
-    ORDER BY appointment_time`,
-    [date],
-  );
-
-  return result.rows;
 }

@@ -1,11 +1,14 @@
-// ─── Imports ────────────────────────────────────────────────────────────
+// ─── Imports ─────────────────────────────────────────────────────────
+
 import { Router } from 'express';
 import { createBooking } from '../controllers/bookingController.js';
 
-// ─── Router setup ──────────────────────────────────────────────────────
+// ─── Router setup ────────────────────────────────────────────────────
+
 const router = Router();
 
-// ─── Booking routes ────────────────────────────────────────────────────
+// ─── Booking routes ──────────────────────────────────────────────────
+
 router.post('/', createBooking);
 
 export default router;
