@@ -27,7 +27,11 @@ export async function getAvailability(req, res) {
 
     const bookings = await getBookingsForDate(date.trim());
 
-    const slots = getAvailableTimeSlots(service.duration_minutes, bookings);
+    const slots = getAvailableTimeSlots(
+      service.duration_minutes,
+      bookings,
+      date.trim(),
+    );
 
     res.json({ slots });
   } catch (error) {

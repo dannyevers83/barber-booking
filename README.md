@@ -4,6 +4,8 @@ A full-stack barber booking demo built with React, Vite, Tailwind CSS, Express a
 
 Customers can select a service, choose an available time and submit their contact details. Bookings are saved in PostgreSQL. A database exclusion constraint prevents overlapping appointments for the single demo barber, including concurrent booking requests.
 
+Elapsed appointment times are hidden for the current day and rejected when submitting a booking. Date and time checks use the Europe/Amsterdam time zone.
+
 ## Project structure
 
 ```text
@@ -40,13 +42,13 @@ Open the Vite URL shown in the terminal. Vite forwards `/api` requests to the lo
 
 ## Online demo on Render
 
-Push this repository to GitHub and create a Render Blueprint using the root `render.yaml`. It defines one free Node web service and one free PostgreSQL 18 database in Frankfurt.
+The live demo runs on a free Render Node web service with PostgreSQL 18 on Neon Free, both in Frankfurt. The original Render database is retained temporarily as a rollback copy. The root `render.yaml` keeps that resource declared so a Blueprint sync does not remove it unexpectedly.
 
 The build installs both applications and builds the frontend. Express serves the built frontend and `/api` endpoints from the same domain. The server reads `DATABASE_URL` from Render's environment settings; local passwords and test bookings are not uploaded. Before listening for requests, the server runs migrations and inserts the four starting services. Startup fails if initialization fails.
 
 ### Moving the online database to Neon
 
-The migration is not complete until the application has been verified against Neon. The original Render database remains available during the move.
+The Render-to-Neon transfer was completed on 18 November 2026. All four services and the existing booking were copied and compared field by field, and the final application deployment is live with booking maintenance disabled. The procedure below documents the transfer for future reference; the original Render database has not been deleted.
 
 1. Create an empty Neon Free project using PostgreSQL 18, preferably in Frankfurt, and test the migrations on an isolated Neon branch.
 2. Push the updated source and `render.yaml`. The Blueprint changes `DATABASE_URL` to a manually managed secret. Its existing value is preserved.
@@ -60,7 +62,7 @@ This server-side transfer can read the original database over Render's private n
 
 The app already supports an external Postgres connection string. Its migrations and seed data are repeatable, so starting it against the restored database preserves existing bookings and service prices. Local development continues to use Docker on port 5433.
 
-Render's free web service can sleep when inactive. Free Render PostgreSQL databases expire after 30 days. Review the current [free instance limits](https://render.com/docs/free) before publishing; this configuration is intended for a temporary demo.
+Render's free web service can sleep when inactive. The live app uses [Neon Free](https://neon.com/pricing), which has usage limits and no fixed trial expiration. The old Render database still expires after 30 days, but the live application no longer depends on it.
 
 ## API
 
@@ -75,7 +77,7 @@ The original `/health`, `/services`, `/availability` and `/bookings` paths remai
 
 ## Current scope
 
-This is a learning demo for one barber. Appointments are test data. Accounts, cancellation, owner dashboards, payments, email confirmations, closed days and filtering out elapsed times today are still to be added. Availability is loaded when the service or date changes; if another user books a time in the meantime, the database rejects the conflicting submission with HTTP 409.
+This is a learning demo for one barber. Appointments are test data. Accounts, cancellation, owner dashboards, payments, email confirmations, and closed days are still to be added. Availability is loaded when the service or date changes; if another user books a time in the meantime, the database rejects the conflicting submission with HTTP 409.
 
 ## Checks
 

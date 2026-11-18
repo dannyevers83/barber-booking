@@ -1,3 +1,7 @@
+// ─── Imports ────────────────────────────────────────────────────────────
+
+import { getTodayDate } from '../utils/timeUtils.js';
+
 // ─── Appointment date validation ───────────────────────────────────
 
 export function validateAppointmentDate(dateValue) {
@@ -24,16 +28,7 @@ export function validateAppointmentDate(dateValue) {
   }
 
   // ─── Earliest date in the shop time zone ─────────────────────────────
-  const todayParts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Europe/Amsterdam',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).formatToParts(new Date());
-
-  const today = ['year', 'month', 'day']
-    .map((type) => todayParts.find((part) => part.type === type).value)
-    .join('-');
+  const today = getTodayDate();
 
   if (date < today) {
     return 'Please choose today or a future date.';

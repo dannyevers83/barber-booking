@@ -3,6 +3,11 @@ import { validateBooking } from '../validators/bookingValidator.js';
 import { getServiceById } from '../models/serviceModel.js';
 import { insertBooking } from '../models/bookingModel.js';
 import { generateTimeSlots } from '../services/availabilityService.js';
+import {
+  getTodayDate,
+  getCurrentTimeInMinutes,
+  timeToMinutes,
+} from '../utils/timeUtils.js';
 
 // ─── Booking controller ────────────────────────────────────────────────
 export async function createBooking(req, res) {
@@ -48,6 +53,17 @@ export async function createBooking(req, res) {
     if (!validTimes.includes(cleanedBooking.time)) {
       return res.status(400).json({
         error: 'Please select a valid appointment time.',
+      });
+    }
+
+    // ─── Reject elapsed times today ────────────────────────────────────
+
+    if (
+      cleanedBooking.date === getTodayDate() &&
+      timeToMinutes(cleanedBooking.time) <= getCurrentTimeInMinutes()
+    ) {
+      return res.status(400).json({
+        error: 'Please choose a future appointment time.',
       });
     }
 

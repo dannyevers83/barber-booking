@@ -4,6 +4,8 @@ import { createHash } from 'node:crypto';
 
 // ─── Transfer the demo's existing data without changing the source ──
 
+// ─── Transfer queries ────────────────────────────────────────
+
 const serviceQuery = `SELECT id, name, duration_minutes, price_cents
   FROM services ORDER BY id`;
 
@@ -15,6 +17,8 @@ const bookingQuery = `SELECT id, service_id,
   to_char(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS created_at
   FROM bookings ORDER BY id`;
 
+// ─── Database transfer ───────────────────────────────────────
+
 export async function transferDatabase(sourcePool, targetPool, sourceIdentity) {
   const source = await sourcePool.connect();
   let target;
@@ -23,6 +27,8 @@ export async function transferDatabase(sourcePool, targetPool, sourceIdentity) {
 
   try {
     target = await targetPool.connect();
+    // ─── Transaction setup ───────────────────────────────────────
+
     await source.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
     sourceOpen = true;
     await target.query('BEGIN');
@@ -35,6 +41,8 @@ export async function transferDatabase(sourcePool, targetPool, sourceIdentity) {
       bookings_count INTEGER NOT NULL,
       completed_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`);
+
+    // ─── Completed transfer check ────────────────────────────────
 
     const sourceKey = createHash('sha256').update(sourceIdentity).digest('hex');
     const completed = await target.query(
@@ -50,6 +58,8 @@ export async function transferDatabase(sourcePool, targetPool, sourceIdentity) {
       return { ...completed.rows[0], alreadyCompleted: true };
     }
 
+    // ─── Destination protection ──────────────────────────────────
+
     const existing = await target.query(
       'SELECT count(*)::integer AS count FROM bookings',
     );
@@ -59,8 +69,12 @@ export async function transferDatabase(sourcePool, targetPool, sourceIdentity) {
       );
     }
 
+    // ─── Source snapshot ─────────────────────────────────────────
+
     const services = (await source.query(serviceQuery)).rows;
     const bookings = (await source.query(bookingQuery)).rows;
+
+    // ─── Copy services ───────────────────────────────────────────
 
     for (const service of services) {
       await target.query(
@@ -76,6 +90,8 @@ export async function transferDatabase(sourcePool, targetPool, sourceIdentity) {
         ],
       );
     }
+
+    // ─── Copy bookings ───────────────────────────────────────────
 
     for (const booking of bookings) {
       await target.query(
@@ -98,6 +114,8 @@ export async function transferDatabase(sourcePool, targetPool, sourceIdentity) {
       );
     }
 
+    // ─── Verify copied data ──────────────────────────────────────
+
     // Compare every stored field, including UUIDs and original creation times.
     const copiedServices = (await target.query(serviceQuery)).rows;
     const copiedBookings = (await target.query(bookingQuery)).rows;
@@ -109,6 +127,8 @@ export async function transferDatabase(sourcePool, targetPool, sourceIdentity) {
         'Verification failed. Destination changes will be rolled back.',
       );
     }
+
+    // ─── Record completed transfer ───────────────────────────────
 
     await target.query(
       `INSERT INTO database_transfers (source_key, services_count, bookings_count)
@@ -125,10 +145,12 @@ export async function transferDatabase(sourcePool, targetPool, sourceIdentity) {
       bookings_count: bookings.length,
       alreadyCompleted: false,
     };
+    // ─── Rollback on failure ─────────────────────────────────────
   } catch (error) {
     if (targetOpen) await target.query('ROLLBACK');
     if (sourceOpen) await source.query('ROLLBACK');
     throw error;
+    // ─── Release connections ─────────────────────────────────────
   } finally {
     target?.release();
     source.release();
