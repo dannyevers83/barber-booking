@@ -20,6 +20,8 @@ function App() {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [dateError, setDateError] = useState('');
+  const [availabilityVersion, setAvailabilityVersion] = useState(0);
+  const [bookingMessage, setBookingMessage] = useState('');
 
   // ─── Section references ──────────────────────────────────────────────
   const appointmentSectionRef = useRef(null);
@@ -50,12 +52,15 @@ function App() {
     : '';
 
   // ─── Event handlers ──────────────────────────────────────────────────
+
   function selectService(serviceId) {
+    setBookingMessage('');
     setSelectedServiceId(serviceId);
     setSelectedTime('');
   }
 
   function selectDate(date) {
+    setBookingMessage('');
     setSelectedTime('');
 
     if (date && date < minimumDate) {
@@ -66,6 +71,17 @@ function App() {
 
     setDateError('');
     setSelectedDate(date);
+  }
+
+  function handleBookingSuccess(message) {
+    setBookingMessage(message);
+    setSelectedTime('');
+    setAvailabilityVersion((version) => version + 1);
+  }
+
+  function selectTime(time) {
+    setBookingMessage('');
+    setSelectedTime(time);
   }
 
   // ─── Service loading effect ──────────────────────────────────────────
@@ -180,11 +196,20 @@ function App() {
           selectedTime={selectedTime}
           minimumDate={minimumDate}
           onDateChange={selectDate}
-          onTimeChange={setSelectedTime}
+          onTimeChange={selectTime}
           appointmentSectionRef={appointmentSectionRef}
           timeSlotRef={timeSlotRef}
           dateError={dateError}
+          availabilityVersion={availabilityVersion}
         />
+      )}
+
+      {/* ─── Booking confirmation ────────────────────────────────────── */}
+
+      {bookingMessage && (
+        <p role="status" className="mt-6 text-primary">
+          {bookingMessage}
+        </p>
       )}
 
       {/* ─── Appointment summary ────────────────────────────────────── */}
@@ -206,6 +231,7 @@ function App() {
             serviceId={selectedServiceId}
             date={selectedDate}
             time={selectedTime}
+            onBookingSuccess={handleBookingSuccess}
           />
         </section>
       )}

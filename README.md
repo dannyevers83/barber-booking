@@ -77,7 +77,9 @@ The original `/health`, `/services`, `/availability` and `/bookings` paths remai
 
 ## Current scope
 
-This is a learning demo for one barber. Appointments are test data. Accounts, cancellation, owner dashboards, payments, email confirmations, and closed days are still to be added. Availability is loaded when the service or date changes; if another user books a time in the meantime, the database rejects the conflicting submission with HTTP 409.
+This is a learning demo for one barber. Appointments are test data. Accounts, cancellation, owner dashboards, payments, email confirmations, and closed days are still to be added.
+
+Availability refreshes when the service or date changes and after a successful booking. The selected time is cleared after booking, while the confirmation remains visible until a new selection is made. If another user books a time in the meantime, the database rejects the conflicting submission with HTTP 409.
 
 ## Checks
 

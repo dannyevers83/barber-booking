@@ -13,6 +13,7 @@ function DateTimeSelection({
   onTimeChange,
   appointmentSectionRef,
   timeSlotRef,
+  availabilityVersion,
 }) {
   // ─── Availability state ────────────────────────────────────────────
 
@@ -56,7 +57,7 @@ function DateTimeSelection({
     return () => {
       active = false;
     };
-  }, [serviceId, selectedDate]);
+  }, [serviceId, selectedDate, availabilityVersion]);
 
   // ─── Selection layout ─────────────────────────────────────────────────
   return (

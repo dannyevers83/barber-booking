@@ -4,21 +4,19 @@ import { useState } from 'react';
 import { createBooking } from '@/api/bookings';
 
 // ─── Booking form component ────────────────────────────────────────────
-function BookingForm({ serviceId, date, time }) {
+function BookingForm({ serviceId, date, time, onBookingSuccess }) {
   // ─── Customer details state ───────────────────────────────────────────
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   // ─── Submission state ─────────────────────────────────────────────────
   const [bookingError, setBookingError] = useState('');
-  const [bookingMessage, setBookingMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // ─── Booking submission ──────────────────────────────────────────────
   async function handleBookingSubmit(event) {
     event.preventDefault();
 
-    setBookingMessage('');
     setBookingError('');
 
     const booking = {
@@ -45,7 +43,7 @@ function BookingForm({ serviceId, date, time }) {
 
     try {
       const result = await createBooking(booking);
-      setBookingMessage(result.message);
+      onBookingSuccess(result.message);
     } catch (error) {
       setBookingError(error.message);
     } finally {
@@ -112,14 +110,6 @@ function BookingForm({ serviceId, date, time }) {
       {bookingError && (
         <p role="alert" className="mt-4 text-destructive">
           {bookingError}
-        </p>
-      )}
-
-      {/* ─── Submission message ─────────────────────────────────────── */}
-
-      {bookingMessage && (
-        <p role="status" className="mt-4 text-primary">
-          {bookingMessage}
         </p>
       )}
 
