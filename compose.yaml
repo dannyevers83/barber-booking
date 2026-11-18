@@ -1,0 +1,14 @@
+services:
+  database:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: barber_booking
+      POSTGRES_USER: barber_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    ports:
+      - '127.0.0.1:5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+volumes:
+  postgres_data:
