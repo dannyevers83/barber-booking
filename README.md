@@ -77,9 +77,11 @@ The original `/health`, `/services`, `/availability` and `/bookings` paths remai
 
 ## Current scope
 
-This is a learning demo for one barber. Appointments are test data. Accounts, cancellation, owner dashboards, payments, email confirmations, and closed days are still to be added.
+This is a learning demo for one barber. Appointments are test data. Accounts, cancellation, owner dashboards, payments, email confirmations, are still to be added.
 
 Availability refreshes when the service or date changes and after a successful booking. The selected time is cleared after booking, while the confirmation remains visible until a new selection is made. If another user books a time in the meantime, the database rejects the conflicting submission with HTTP 409.
+
+An inline calendar disables past dates and Sundays. Closed days are also rejected by the API. The calendar and available times appear side by side on larger screens and stack vertically on mobile.
 
 ## Checks
 

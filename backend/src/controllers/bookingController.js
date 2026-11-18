@@ -7,6 +7,7 @@ import {
   getTodayDate,
   getCurrentTimeInMinutes,
   timeToMinutes,
+  isClosedDay,
 } from '../utils/timeUtils.js';
 
 // ─── Booking controller ────────────────────────────────────────────────
@@ -44,6 +45,14 @@ export async function createBooking(req, res) {
     if (!service) {
       return res.status(400).json({
         error: 'Please select an available service.',
+      });
+    }
+
+    // ─── Reject bookings on closed days ────────────────────────────────
+
+    if (isClosedDay(cleanedBooking.date)) {
+      return res.status(400).json({
+        error: 'The shop is closed on this day. Please choose another date.',
       });
     }
 

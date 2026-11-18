@@ -6,6 +6,7 @@ import {
   minutesToTime,
   getCurrentTimeInMinutes,
   getTodayDate,
+  isClosedDay,
 } from '../utils/timeUtils.js';
 
 // ─── Generate candidate times ──────────────────────────────────────
@@ -40,6 +41,10 @@ export function hasOverlap(start, end, bookings) {
 // ─── Find available times ──────────────────────────────────────────
 
 export function getAvailableTimeSlots(durationMinutes, bookings, date) {
+  if (isClosedDay(date)) {
+    return [];
+  }
+
   const slots = generateTimeSlots(durationMinutes);
   const isToday = date === getTodayDate();
   const currentTime = getCurrentTimeInMinutes();

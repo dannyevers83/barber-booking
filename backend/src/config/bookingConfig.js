@@ -5,4 +5,5 @@ export const bookingConfig = {
   openingTime: '09:00',
   closingTime: '17:00',
   slotIntervalMinutes: 15,
+  closedWeekdays: [0],
 };

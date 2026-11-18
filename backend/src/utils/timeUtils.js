@@ -46,3 +46,11 @@ export function getTodayDate() {
     .map((type) => parts.find((part) => part.type === type).value)
     .join('-');
 }
+
+// ─── Check whether the shop is closed ──────────────────────────────
+
+export function isClosedDay(date) {
+  const weekday = new Date(`${date}T00:00:00Z`).getUTCDay();
+
+  return bookingConfig.closedWeekdays.includes(weekday);
+}
